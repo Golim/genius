@@ -1,9 +1,12 @@
 # Genius
-Find the lyrics of the song you are listening to directly from your linux terminal
+Find the lyrics of the song you are listening to directly from your linux terminal. Lyrics are from [Genius](https://genius.com/)
 
 ## Requirements
 - Python 3
 - [BeautifulSoup](https://www.crummy.com/software/BeautifulSoup/)
+
+### Optional
+- [argcomplete](https://argcomplete.readthedocs.io/en/latest/) with [active global completion](https://pypi.org/project/argcomplete/#activating-global-completion): tab completion of arguments
 
 ## How to use
     git clone https://github.com/golim/genius

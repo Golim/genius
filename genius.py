@@ -2,8 +2,11 @@
 
 import os
 import dbus
+import argparse
 import requests
+import importlib
 from bs4 import BeautifulSoup
+from difflib import SequenceMatcher
 
 def get_current_song_info():
     # kudos to jooon from this stackoverflow question http://stackoverflow.com/a/33923095
@@ -21,23 +24,20 @@ def get_current_song_info():
     return (artist + " " + title)
 
 def clean_song_name(song):
-    # Genius search function does not love this words:
-    song = song.replace("Version", "")
-    song = song.replace("version", "")
-    song = song.replace("Remastered", "")
-    song = song.replace("remastered", "")
-    song = song.replace("Studio", "")
-    song = song.replace("studio", "")
-    song = song.replace("Original", "")
-    song = song.replace("original", "")
-    song = song.replace("-", "")
-    song = song.replace("(", "")
-    song = song.replace(")", "")
-    song = song.replace("[", "")
-    song = song.replace("]", "")
-    song = song.replace("  ", " ")
+    return song.split("-")[0]
 
-    return song
+
+def string_similarity(s1, s2):
+    s1 = s1.lower()
+    s2 = s2.lower()
+
+    count = 0
+
+    for word in s1.split():
+        if word in s2.split():
+            count += 1
+    
+    return count / len(s1.split())
 
 def search_song(query):
     url = 'https://api.genius.com'
@@ -69,17 +69,30 @@ def get_lyric(url):
     return(lyric)
 
 
-def main():
-    song = get_current_song_info()
-
+def main(song):
     song = clean_song_name(song)
 
     response = search_song(song)
 
     if response.status_code == 200:
+        if len(response.json()["response"]["hits"]) == 0:
+            print("Not found")
+            return
+        
         result = response.json()["response"]["hits"][0]["result"]
 
         title = result["full_title"]
+        
+        if string_similarity(song, title) < 0.5:
+            print("The result could be wrong")
+            print("Song found: ", title)
+            i = input("Do you want to continue? [y/N] ")
+            if not i.lower() in ("yes", "y"):
+                print("You can search directly for the song by using --song \"song name\"")
+                return
+
+            print("\n\n")
+        
         url = result["url"]
 
         lyric = get_lyric(url)
@@ -91,4 +104,26 @@ def main():
         print("Error: " + str(response.status_code))
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(prog='GESNIUS', description="Find the lyrics of the song you are listening to directly from your linux terminal")
+
+    parser.add_argument('-v', '--version', action='version', version='%(prog)s 1.0')
+    
+    parser.add_argument('-s', '--song', help='search for a specific song', action='store', type=str)
+
+    argcomplete = importlib.util.find_spec("argcomplete")
+    if argcomplete is not None:
+        import argcomplete
+        argcomplete.autocomplete(parser)
+
+    argcomplete.autocomplete(parser)
+    args = parser.parse_args()
+
+    if args.song is not None:
+        song = args.song
+    else:
+        song = get_current_song_info()
+    
+    if "GENIUS_TOKEN" in os.environ:
+        main(song)
+    else:
+        print("You have to set the environment variable GENIUS_TOKEN with your token")
