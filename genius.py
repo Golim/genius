@@ -104,7 +104,7 @@ def main(song):
         print("Error: " + str(response.status_code))
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(prog='GESNIUS', description="Find the lyrics of the song you are listening to directly from your linux terminal")
+    parser = argparse.ArgumentParser(prog='GENIUS', description="Find the lyrics of the song you are listening to directly from your linux terminal")
 
     parser.add_argument('-v', '--version', action='version', version='%(prog)s 1.0')
     
