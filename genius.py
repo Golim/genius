@@ -114,8 +114,7 @@ if __name__ == "__main__":
     if argcomplete is not None:
         import argcomplete
         argcomplete.autocomplete(parser)
-
-    argcomplete.autocomplete(parser)
+    
     args = parser.parse_args()
 
     if args.song is not None:
