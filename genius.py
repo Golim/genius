@@ -8,6 +8,12 @@ import importlib
 from bs4 import BeautifulSoup
 from difflib import SequenceMatcher
 
+DEBUG = False
+
+def debug(s):
+    if DEBUG:
+        print(f'DEBUG: {s}')
+
 def get_current_song_info():
     # kudos to jooon from this stackoverflow question http://stackoverflow.com/a/33923095
     session_bus = dbus.SessionBus()
@@ -64,10 +70,12 @@ def get_lyric(url):
     )
 
     html = BeautifulSoup(r.text, "html.parser")
-    lyric = html.find("div", class_="lyrics").get_text()
 
-    return(lyric)
-
+    try:
+        return html.find("div", class_="lyrics").get_text()
+    except:
+        # This could lead to an infinite loop, but who knows
+        return get_lyric(url)
 
 def main(song):
     song = clean_song_name(song)
@@ -97,7 +105,7 @@ def main(song):
 
         lyric = get_lyric(url)
 
-        print("Lyric for: " + title)
+        print(f'Lyric for: {title}')
         print(lyric)
 
     else:
@@ -109,12 +117,14 @@ if __name__ == "__main__":
     parser.add_argument('-v', '--version', action='version', version='%(prog)s 1.0')
     
     parser.add_argument('-s', '--song', help='search for a specific song', action='store', type=str)
+    
+    parser.add_argument('--debug', help='print debug information', action='store_true')
 
     argcomplete = importlib.util.find_spec("argcomplete")
     if argcomplete is not None:
         import argcomplete
         argcomplete.autocomplete(parser)
-    
+
     args = parser.parse_args()
 
     if args.song is not None:
@@ -122,6 +132,11 @@ if __name__ == "__main__":
     else:
         song = get_current_song_info()
     
+    if args.debug:
+        DEBUG = True
+
+    debug(f'Song: {song}')
+
     if "GENIUS_TOKEN" in os.environ:
         main(song)
     else:
