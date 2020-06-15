@@ -86,7 +86,7 @@ def main(song):
         if len(response.json()["response"]["hits"]) == 0:
             print("Not found")
             return
-        
+
         result = response.json()["response"]["hits"][0]["result"]
 
         title = result["full_title"]
@@ -112,7 +112,7 @@ def main(song):
         print("Error: " + str(response.status_code))
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(prog='GENIUS', description="Find the lyrics of the song you are listening to directly from your linux terminal")
+    parser = argparse.ArgumentParser(prog='GENIUS', description="Find the lyrics of the song you are listening to directly from your Linux terminal")
 
     parser.add_argument('-v', '--version', action='version', version='%(prog)s 1.0')
     
@@ -140,4 +140,4 @@ if __name__ == "__main__":
     if "GENIUS_TOKEN" in os.environ:
         main(song)
     else:
-        print("You have to set the environment variable GENIUS_TOKEN with your token")
+        print("You have to set the environment variable GENIUS_TOKEN with your token, get yours here: https://genius.com/api-clients")
