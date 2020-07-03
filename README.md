@@ -15,17 +15,21 @@ Find the lyrics of the song you are listening to directly from your Linux termin
 
     git clone https://github.com/golim/genius
     cd genius
-    chmod +x genius.py
+    chmod +x genius-lyrics
 
 Set an environment variable called `GENIUS_TOKEN` with the token you can request [here](https://genius.com/api-clients) and reboot.
 
-    ./genius.py
+    ./genius-lyrics
 
 ### How to Install
 
+Using `pip`:
+
     pip install genius-lyrics
 
-    sudo cp genius.py /usr/local/bin/genius
+From cloned source code:
+
+    sudo cp genius-lyrics /usr/local/bin/genius-lyrics
 
 ## Screenshot
 

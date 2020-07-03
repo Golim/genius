@@ -5,8 +5,8 @@ with open("README.md", "r") as fh:
 
 setup(
     name='genius-lyrics',
-    version='1.1',
-    scripts=['genius.py'],
+    version='1.3',
+    scripts=['genius-lyrics'],
     author="Matteo Golinelli",
     author_email="matteogolinelli97@gmail.com",
     description="Find the lyrics of the song you are listening to directly from your Linux terminal",

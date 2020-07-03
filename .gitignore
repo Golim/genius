@@ -6,3 +6,9 @@
 
 # Temp files/dirs
 tmp*
+
+# pip package folders
+build/
+dist/
+genius_lyrics.egg-info/
+*__*
