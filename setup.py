@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name='genius-lyrics',
-    version='1.3',
+    version='1.4',
     scripts=['genius-lyrics'],
     author="Matteo Golinelli",
     author_email="matteogolinelli97@gmail.com",
@@ -16,5 +16,5 @@ setup(
     install_requires=[
         'beautifulsoup4',
     ],
-    keywords = ['GENIUS', 'LYRICS', 'TERMINAL'],
+    keywords = ['GENIUS', 'LYRICS', 'SPOTIFY'],
 )
