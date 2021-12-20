@@ -64,18 +64,30 @@ def get_lyric(url):
     token = os.environ["GENIUS_TOKEN"]
     authorization = "Bearer {}".format(token)
     headers = {'Authorization': authorization}
-    r = requests.get(
-        url,
-        headers=headers
-    )
-
-    html = BeautifulSoup(r.text, "html.parser")
+    try:
+        r = requests.get(
+            url,
+            headers=headers
+        )
+    except requests.exceptions.RequestException as e:
+        print(e)
+        return
 
     try:
-        return html.find("div", class_="lyrics").get_text()
-    except:
-        # This could lead to an infinite loop, but who knows
-        return get_lyric(url)
+        html = BeautifulSoup(r.text, "html.parser")
+
+        children = html.find("div", {"id": "lyrics-root"}).children
+        for c in children:
+            for br in c.find_all("br"):
+                br.replace_with("\n")
+
+            lyrics = c.get_text()
+            break
+
+        return lyrics
+    except Exception as e:
+        debug(f'Error: {e}')
+        return "No lyrics found"
 
 def main(song):
     song = clean_song_name(song)
@@ -103,9 +115,11 @@ def main(song):
         
         url = result["url"]
 
+        debug(f'Song url: {url}')
+
         lyric = get_lyric(url)
 
-        print(f'Lyric for: {title}')
+        print(f'Lyrics for: {title}\n')
         print(lyric)
 
     else:
