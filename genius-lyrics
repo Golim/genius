@@ -79,7 +79,6 @@ def get_lyric(url):
         children = html.find("div", {"id": "lyrics-root"}).children
         lyrics = ""
         for c in children:
-            print(c.get("class"))
             if any('lyrics__container' in i.lower() for i in c.get("class")):
                 for br in c.find_all("br"):
                     br.replace_with("\n")
