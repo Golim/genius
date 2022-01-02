@@ -77,12 +77,14 @@ def get_lyric(url):
         html = BeautifulSoup(r.text, "html.parser")
 
         children = html.find("div", {"id": "lyrics-root"}).children
+        lyrics = ""
         for c in children:
-            for br in c.find_all("br"):
-                br.replace_with("\n")
+            print(c.get("class"))
+            if any('lyrics__container' in i.lower() for i in c.get("class")):
+                for br in c.find_all("br"):
+                    br.replace_with("\n")
 
-            lyrics = c.get_text()
-            break
+                lyrics += '\n' + c.get_text()
 
         return lyrics
     except Exception as e:
